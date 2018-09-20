@@ -19,7 +19,7 @@
 
     <FrameLayout
         android:id="@+id/transaction_history_holder"
-        android:layout_width="372dp"
+        android:layout_width="0dp"
         android:layout_height="413dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
@@ -33,7 +33,7 @@
         <fragment
             android:id="@+id/fragment"
             android:name="joesogard.mymoney.TransactionFragment"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:layout="@layout/fragment_transaction_list" />
     </FrameLayout>

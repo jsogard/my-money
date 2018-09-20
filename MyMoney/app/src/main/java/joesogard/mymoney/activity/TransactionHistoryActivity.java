@@ -1,13 +1,12 @@
 package joesogard.mymoney.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
 
 import joesogard.mymoney.R;
 import joesogard.mymoney.TransactionFragment;
-import joesogard.mymoney.TransactionModel;
-import joesogard.mymoney.dummy.DummyContent;
+import joesogard.mymoney.model.TransactionModel;
 
 public class TransactionHistoryActivity extends FragmentActivity
                 implements TransactionFragment.OnListFragmentInteractionListener {
@@ -19,7 +18,11 @@ public class TransactionHistoryActivity extends FragmentActivity
     }
 
     @Override
-    public void onListFragmentInteraction(TransactionModel item) {
-
+    public void onListFragmentInteraction(TransactionModel transactionModel) {
+        Intent toIndividualTransaction = new Intent(
+                TransactionHistoryActivity.this, IndividualTransactionActivity.class);
+        toIndividualTransaction.putExtra(
+                IndividualTransactionActivity.EXTRA_INT_TRANSACTION_ID, transactionModel.id);
+        startActivity(toIndividualTransaction);
     }
 }

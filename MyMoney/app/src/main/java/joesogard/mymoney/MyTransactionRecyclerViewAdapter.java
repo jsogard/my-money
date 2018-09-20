@@ -1,5 +1,6 @@
 package joesogard.mymoney;
 
+import android.graphics.ColorSpace;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 
 import joesogard.mymoney.TransactionFragment.OnListFragmentInteractionListener;
 import joesogard.mymoney.dummy.DummyContent.Transaction;
+import joesogard.mymoney.model.TransactionModel;
 
 import java.util.List;
 
@@ -33,11 +35,16 @@ public class MyTransactionRecyclerViewAdapter extends RecyclerView.Adapter<MyTra
         return new ViewHolder(view);
     }
 
+    /*
+    How the recyclerview translates from data in a list to a fragment
+    ViewHolder holds the fragment_transaction and sets the values for strings here
+     */
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).title);
+        holder.mHeaderView.setText(mValues.get(position).title);
         holder.mContentView.setText(mValues.get(position).description);
+        holder.mAmountView.setText(Float.toString(mValues.get(position).amount));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,17 +63,23 @@ public class MyTransactionRecyclerViewAdapter extends RecyclerView.Adapter<MyTra
         return mValues.size();
     }
 
+    /*
+    Holds the view of the fragment
+    Binds the fragments views to variables that can be set
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
+        public final TextView mHeaderView;
         public final TextView mContentView;
+        public final TextView mAmountView;
         public TransactionModel mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.header);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mHeaderView = (TextView) view.findViewById(R.id.header);
+            mContentView = (TextView) view.findViewById(R.id.description);
+            mAmountView = (TextView) view.findViewById(R.id.amount);
         }
 
         @Override

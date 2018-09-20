@@ -12,6 +12,7 @@
         <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -19,11 +20,12 @@
             android:name=".activity.TransactionHistoryActivity"
             android:label="@string/title_activity_transaction_history">
             <intent-filter>
-                <action android:name="android.intent.action.ALL_APPS"/>
-                <category android:name="android.intent.category.ALTERNATIVE"/>
+                <action android:name="android.intent.action.ALL_APPS" />
+
+                <category android:name="android.intent.category.ALTERNATIVE" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".activity.IndividualTransactionActivity"></activity>
     </application>
 
 </manifest>

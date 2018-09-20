@@ -2,7 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout"
+    android:id="@+id/fragmentLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -13,21 +13,34 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:text="testdosapkdls"
-        android:textAppearance="?attr/textAppearanceListItem"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/content"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:id="@+id/amount"
+        android:layout_width="99dp"
+        android:layout_height="32dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
-        android:text="this is all of the content``"
-        android:textAppearance="?attr/textAppearanceListItem"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:text="+1.23"
+        android:textAlignment="viewStart"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="243dp"
+        android:layout_height="18dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header" />
+
 </android.support.constraint.ConstraintLayout>

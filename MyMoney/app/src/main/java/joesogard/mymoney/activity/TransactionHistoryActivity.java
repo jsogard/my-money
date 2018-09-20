@@ -1,11 +1,15 @@
-package joesogard.mymoney;
+package joesogard.mymoney.activity;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 
+import joesogard.mymoney.R;
+import joesogard.mymoney.TransactionFragment;
+import joesogard.mymoney.TransactionModel;
 import joesogard.mymoney.dummy.DummyContent;
 
-public class TransactionHistoryActivity extends Activity
+public class TransactionHistoryActivity extends FragmentActivity
                 implements TransactionFragment.OnListFragmentInteractionListener {
 
     @Override

@@ -18,10 +18,10 @@ import java.util.List;
  */
 public class MyTransactionRecyclerViewAdapter extends RecyclerView.Adapter<MyTransactionRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Transaction> mValues;
+    private final List<TransactionModel> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyTransactionRecyclerViewAdapter(List<Transaction> items, OnListFragmentInteractionListener listener) {
+    public MyTransactionRecyclerViewAdapter(List<TransactionModel> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -36,8 +36,8 @@ public class MyTransactionRecyclerViewAdapter extends RecyclerView.Adapter<MyTra
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(mValues.get(position).title);
+        holder.mContentView.setText(mValues.get(position).description);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,12 +60,12 @@ public class MyTransactionRecyclerViewAdapter extends RecyclerView.Adapter<MyTra
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public Transaction mItem;
+        public TransactionModel mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
+            mIdView = (TextView) view.findViewById(R.id.header);
             mContentView = (TextView) view.findViewById(R.id.content);
         }
 

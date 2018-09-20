@@ -67,7 +67,7 @@ public class TransactionFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyTransactionRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.setAdapter(new MyTransactionRecyclerViewAdapter(TransactionModel.TRANSACTION_LIST, mListener));
         }
         return view;
     }
@@ -102,6 +102,6 @@ public class TransactionFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Transaction item);
+        void onListFragmentInteraction(TransactionModel item);
     }
 }

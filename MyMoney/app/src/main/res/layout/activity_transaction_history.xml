@@ -32,9 +32,8 @@
 
         <fragment
             android:id="@+id/fragment"
-            android:name="joesogard.mymoney.TransactionFragment"
+            android:name="joesogard.mymoney.TransactionDayFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:layout="@layout/fragment_transaction_list" />
+            android:layout_height="wrap_content" />
     </FrameLayout>
 </android.support.constraint.ConstraintLayout>

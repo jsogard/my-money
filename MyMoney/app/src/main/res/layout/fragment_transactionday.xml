@@ -11,4 +11,10 @@
         android:text="Monday, Sept 1"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
+    <LinearLayout
+        android:id="@+id/transactionsList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"></LinearLayout>
+
 </LinearLayout>

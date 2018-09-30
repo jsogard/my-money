@@ -1,6 +1,5 @@
 package joesogard.mymoney;
 
-import android.graphics.ColorSpace;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,9 +76,9 @@ public class MyTransactionRecyclerViewAdapter extends RecyclerView.Adapter<MyTra
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mHeaderView = (TextView) view.findViewById(R.id.header);
+            mHeaderView = (TextView) view.findViewById(R.id.transactionHeader);
             mContentView = (TextView) view.findViewById(R.id.description);
-            mAmountView = (TextView) view.findViewById(R.id.amount);
+            mAmountView = (TextView) view.findViewById(R.id.description);
         }
 
         @Override

@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
+import java.util.Calendar;
+
 import joesogard.mymoney.R;
 import joesogard.mymoney.TransactionDayFragment;
 import joesogard.mymoney.TransactionFragment;
@@ -17,6 +19,8 @@ public class TransactionHistoryActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_history);
+
+        TransactionModel.getTransactionData();
     }
 
     @Override
@@ -29,7 +33,8 @@ public class TransactionHistoryActivity extends FragmentActivity
     }
 
     @Override
-    public void onListFragmentInteraction(Object object) {
+    public void onListFragmentInteraction(Calendar calendar) {
+
 
     }
 }

@@ -7,11 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import joesogard.mymoney.TransactionDayUtils;
+
 public class TransactionModel {
 
-    public static HashMap<Integer, TransactionModel> TRANSACTION_MAP =
-            new HashMap<>();
+    public static HashMap<Integer, TransactionModel> TRANSACTION_MAP;
     public static List<TransactionModel> TRANSACTION_LIST = new ArrayList<>();
+    private static final long seed = System.currentTimeMillis();
+    private static Random random;
 
     public int id;
     public String title;
@@ -31,23 +34,25 @@ public class TransactionModel {
         TRANSACTION_MAP.put(transactionModel.id, transactionModel);
     }
 
-    static {
-        TransactionModel transactionModel;
-        Random random = new Random();
-        Calendar septFirst = Calendar.getInstance(), calendar;
-        septFirst.set(2018, 9, 1, 0, 0, 1);
-        for(int i = 0; i < 15; i++){
-            calendar = (Calendar)septFirst.clone();
-            calendar.add(Calendar.DAY_OF_MONTH, random.nextInt(5));
-            transactionModel = new TransactionModel(
-                    i, "TransactionModel_" + i,
-                    "Lorem Ipsum Dolor",
-                    (random.nextFloat() - 0.5f) * 100,
-                    calendar
-            );
-            TRANSACTION_LIST.add(transactionModel);
-            TRANSACTION_MAP.put(transactionModel.id, transactionModel);
-        }
+    public static TransactionModel GenerateTransaction(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH,
+                random.nextInt() % TransactionDayUtils.getToday().get(Calendar.DAY_OF_MONTH));
+        calendar.set(Calendar.HOUR_OF_DAY, random.nextInt() % 24);
+        calendar.set(Calendar.MINUTE, random.nextInt() % 60);
+
+        int id = random.nextInt();
+        float balance = (random.nextFloat() - 0.5f) * 100f;
+
+        TransactionModel transactionModel = new TransactionModel(id, "TransactionModel_" + id, "", balance, calendar);
+        return transactionModel;
     }
 
+    public static void getTransactionData() {
+        random = new Random(seed);
+        TRANSACTION_MAP = new HashMap<>();
+        for (int i = 0; i < 15; i++) {
+            AddTransaction(GenerateTransaction());
+        }
+    }
 }

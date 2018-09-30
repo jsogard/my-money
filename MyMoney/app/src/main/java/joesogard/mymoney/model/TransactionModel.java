@@ -18,14 +18,12 @@ public class TransactionModel {
 
     public int id;
     public String title;
-    public String description;
     public float amount;
     public Calendar date;
 
-    public TransactionModel(int id, String title, String description, float amount, Calendar date){
+    public TransactionModel(int id, String title, float amount, Calendar date){
         this.id = id;
         this.title = title;
-        this.description = description;
         this.amount = amount;
         this.date = date;
     }
@@ -44,7 +42,7 @@ public class TransactionModel {
         int id = random.nextInt();
         float balance = (random.nextFloat() - 0.5f) * 100f;
 
-        TransactionModel transactionModel = new TransactionModel(id, "TransactionModel_" + id, "", balance, calendar);
+        TransactionModel transactionModel = new TransactionModel(id, "TransactionModel_" + id, balance, calendar);
         return transactionModel;
     }
 

@@ -3,15 +3,11 @@ package joesogard.mymoney;
 import android.content.Context;
 import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
-import android.support.v7.widget.ContentFrameLayout;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import joesogard.mymoney.activity.IndividualTransactionActivity;
-import joesogard.mymoney.activity.TransactionHistoryActivity;
 import joesogard.mymoney.model.TransactionModel;
 
 public class TransactionView extends ConstraintLayout {
@@ -20,10 +16,11 @@ public class TransactionView extends ConstraintLayout {
     private final TextView balanceText;
     public final TransactionModel transactionModel;
 
+
     public TransactionView(Context context, TransactionModel transactionModel){
         super(context);
 
-        inflate(getContext(), R.layout.fragment_transaction, this);
+        inflate(getContext(), R.layout.transaction_item, this);
         headerText = (TextView)findViewById(R.id.transactionHeader);
         balanceText = (TextView)findViewById(R.id.transactionBalance);
         this.transactionModel = transactionModel;

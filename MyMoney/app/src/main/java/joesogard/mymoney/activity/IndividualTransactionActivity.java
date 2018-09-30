@@ -33,6 +33,5 @@ public class IndividualTransactionActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.transHeader)).setText(transaction.title);
         //((TextView)findViewById(R.id.transDate)).setText(transaction.date);
         ((TextView)findViewById(R.id.transAmount)).setText(Float.toString(transaction.amount));
-        ((TextView)findViewById(R.id.transNotesText)).setText(transaction.description);
     }
 }

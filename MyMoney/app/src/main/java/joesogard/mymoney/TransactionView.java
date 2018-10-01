@@ -26,8 +26,8 @@ public class TransactionView extends ConstraintLayout {
         this.transactionModel = transactionModel;
 
         headerText.setText(transactionModel.title);
-        balanceText.setText(Float.toString(transactionModel.amount));
-        int rColor = transactionModel.amount < 0 ? R.color.colorLoss : R.color.colorProfit;
+        balanceText.setText(Float.toString(transactionModel.balance));
+        int rColor = transactionModel.balance < 0 ? R.color.colorLoss : R.color.colorProfit;
         balanceText.setTextColor(getResources().getColor(rColor, null));
         setLayoutParams(
                 new ConstraintLayout.LayoutParams(
@@ -35,7 +35,7 @@ public class TransactionView extends ConstraintLayout {
         setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int id = ((TransactionView)v).transactionModel.id;
+                long id = ((TransactionView)v).transactionModel.id;
                 Intent toIndividualTransaction = new Intent(v.getContext(), IndividualTransactionActivity.class);
                 toIndividualTransaction.putExtra(IndividualTransactionActivity.EXTRA_INT_TRANSACTION_ID, id);
                 v.getContext().startActivity(toIndividualTransaction);

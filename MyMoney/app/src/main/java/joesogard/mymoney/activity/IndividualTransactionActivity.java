@@ -10,7 +10,7 @@ import joesogard.mymoney.model.TransactionModel;
 public class IndividualTransactionActivity extends AppCompatActivity {
 
     public static final String EXTRA_INT_TRANSACTION_ID = "EXTRA_INT_TRANSACTION_ID";
-    private static final int DEFAULT_TRANSACTION_ID = -1;
+    private static final long DEFAULT_TRANSACTION_ID = -1;
 
     private TransactionModel transaction;
 
@@ -19,7 +19,7 @@ public class IndividualTransactionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_individual_transaction);
 
-        int transactionId = getIntent().getIntExtra(EXTRA_INT_TRANSACTION_ID, DEFAULT_TRANSACTION_ID);
+        long transactionId = getIntent().getLongExtra(EXTRA_INT_TRANSACTION_ID, DEFAULT_TRANSACTION_ID);
         if(transactionId == DEFAULT_TRANSACTION_ID)
             throw new ExceptionInInitializerError();
 
@@ -32,6 +32,6 @@ public class IndividualTransactionActivity extends AppCompatActivity {
 
         ((TextView)findViewById(R.id.transHeader)).setText(transaction.title);
         //((TextView)findViewById(R.id.transDate)).setText(transaction.date);
-        ((TextView)findViewById(R.id.transAmount)).setText(Float.toString(transaction.amount));
+        ((TextView)findViewById(R.id.transAmount)).setText(Float.toString(transaction.balance));
     }
 }

@@ -6,18 +6,22 @@ import android.support.v4.app.FragmentActivity;
 import java.util.Calendar;
 
 import joesogard.mymoney.R;
+import joesogard.mymoney.TransactionDataAccessor;
 import joesogard.mymoney.TransactionDayFragment;
 import joesogard.mymoney.model.TransactionModel;
 
 public class TransactionHistoryActivity extends FragmentActivity
                 implements  TransactionDayFragment.OnListFragmentInteractionListener {
 
+    private TransactionDataAccessor transactionDataAccessor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_history);
 
-        TransactionModel.getTransactionData();
+        transactionDataAccessor = new TransactionDataAccessor(this);
+        transactionDataAccessor.syncTransactions();
     }
 
     @Override

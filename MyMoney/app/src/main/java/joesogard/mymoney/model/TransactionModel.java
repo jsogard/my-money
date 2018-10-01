@@ -1,12 +1,15 @@
 package joesogard.mymoney.model;
 
+import org.json.JSONException;
+import org.json.simple.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import joesogard.mymoney.Consts;
 import joesogard.mymoney.TransactionDayUtils;
 
 public class TransactionModel {
@@ -14,43 +17,26 @@ public class TransactionModel {
     public static HashMap<Integer, TransactionModel> TRANSACTION_MAP;
     public static List<TransactionModel> TRANSACTION_LIST = new ArrayList<>();
     private static final long seed = System.currentTimeMillis();
-    private static Random random;
 
-    public int id;
+    public long id;
     public String title;
-    public float amount;
+    public float balance;
     public Calendar date;
 
-    public TransactionModel(int id, String title, float amount, Calendar date){
+    public TransactionModel(JSONObject jsonObject)
+            throws JSONException {
+        id = (long)jsonObject.get(Consts.TransactionFields.ID);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis((long)jsonObject.get(Consts.TransactionFields.DATE));
+        date = calendar;
+        balance = new Float((double)jsonObject.get(Consts.TransactionFields.BALANCE));
+        title = (String)jsonObject.get(Consts.TransactionFields.TITLE);
+    }
+
+    public TransactionModel(int id, String title, float balance, Calendar date){
         this.id = id;
         this.title = title;
-        this.amount = amount;
+        this.balance = balance;
         this.date = date;
-    }
-
-    public static void AddTransaction(TransactionModel transactionModel){
-        TRANSACTION_MAP.put(transactionModel.id, transactionModel);
-    }
-
-    public static TransactionModel GenerateTransaction(){
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH,
-                random.nextInt() % TransactionDayUtils.getToday().get(Calendar.DAY_OF_MONTH));
-        calendar.set(Calendar.HOUR_OF_DAY, random.nextInt() % 24);
-        calendar.set(Calendar.MINUTE, random.nextInt() % 60);
-
-        int id = random.nextInt();
-        float balance = (random.nextFloat() - 0.5f) * 100f;
-
-        TransactionModel transactionModel = new TransactionModel(id, "TransactionModel_" + id, balance, calendar);
-        return transactionModel;
-    }
-
-    public static void getTransactionData() {
-        random = new Random(seed);
-        TRANSACTION_MAP = new HashMap<>();
-        for (int i = 0; i < 15; i++) {
-            AddTransaction(GenerateTransaction());
-        }
     }
 }

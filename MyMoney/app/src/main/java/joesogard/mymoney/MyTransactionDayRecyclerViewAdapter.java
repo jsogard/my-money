@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * {@link RecyclerView.Adapter} that can display a  and makes a call to the
@@ -32,10 +33,12 @@ public class MyTransactionDayRecyclerViewAdapter extends RecyclerView.Adapter<My
 
     private final List<Calendar> mValues;
     private final OnListFragmentInteractionListener mListener;
+    private TransactionDataAccessor transactionDataAccessor;
 
     public MyTransactionDayRecyclerViewAdapter(List<Calendar> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
+        transactionDataAccessor = new TransactionDataAccessor();
     }
 
     @Override
@@ -47,7 +50,10 @@ public class MyTransactionDayRecyclerViewAdapter extends RecyclerView.Adapter<My
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(mValues.size() - position - 1);
+        Calendar date = (Calendar)TransactionDayUtils.getToday().clone();
+        date.add(Calendar.DAY_OF_MONTH, -1 - position);
+        TransactionDayUtils.setStartOfDay(date);
+        holder.mItem = date;
         if(holder.mTransactionViewList == null)
             holder.populateTransactionViewList();
 
@@ -95,13 +101,18 @@ public class MyTransactionDayRecyclerViewAdapter extends RecyclerView.Adapter<My
             mTransactionViewList = new ArrayList<TransactionView>();
             TransactionView transactionView;
 
-            for (TransactionModel transactionModel :
-                    TransactionModel.TRANSACTION_MAP.values()) {
-
+            ListIterator<TransactionModel> transactionListIterator =
+                    transactionDataAccessor.getTransactionListIterator();
+            TransactionModel transactionModel;
+            while(transactionListIterator.hasPrevious()){
+                transactionModel = transactionListIterator.previous();
                 if(TransactionDayUtils.isOnSameDay(transactionModel.date, mItem)) {
 
                     transactionView = new TransactionView(mView.getContext(), transactionModel);
                     mTransactionViewList.add(transactionView);
+                }
+                else if(transactionModel.date.before(mItem)){
+                    break;
                 }
             }
         }

@@ -1,21 +1,13 @@
 package joesogard.mymoney;
 
-import android.content.Intent;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.TransitionManager;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import joesogard.mymoney.TransactionDayFragment.OnListFragmentInteractionListener;
-import joesogard.mymoney.activity.IndividualTransactionActivity;
-import joesogard.mymoney.activity.TransactionHistoryActivity;
 import joesogard.mymoney.model.TransactionModel;
 
 import java.util.ArrayList;
@@ -31,14 +23,14 @@ import java.util.ListIterator;
  */
 public class MyTransactionDayRecyclerViewAdapter extends RecyclerView.Adapter<MyTransactionDayRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Calendar> mValues;
     private final OnListFragmentInteractionListener mListener;
-    private TransactionDataAccessor transactionDataAccessor;
+    private final TransactionDataAccessor transactionDataAccessor;
+    private final ListIterator<TransactionModel> transactionIterator;
 
-    public MyTransactionDayRecyclerViewAdapter(List<Calendar> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
+    public MyTransactionDayRecyclerViewAdapter(OnListFragmentInteractionListener listener) {
         mListener = listener;
         transactionDataAccessor = new TransactionDataAccessor();
+        transactionIterator = transactionDataAccessor.getTransactionListIterator();
     }
 
     @Override
@@ -51,67 +43,66 @@ public class MyTransactionDayRecyclerViewAdapter extends RecyclerView.Adapter<My
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Calendar date = (Calendar)TransactionDayUtils.getToday().clone();
-        date.add(Calendar.DAY_OF_MONTH, -1 - position);
+        date.add(Calendar.DAY_OF_MONTH, - position);
         TransactionDayUtils.setStartOfDay(date);
-        holder.mItem = date;
-        if(holder.mTransactionViewList == null)
-            holder.populateTransactionViewList();
+        holder.mDate = date;
+        holder.populateTransactionViewList();
 
         holder.populateTransactionLayout();
         holder.mDateView.setText(
-                TransactionDayUtils.dateFormat.format(new Date(holder.mItem.getTimeInMillis())));
+                TransactionDayUtils.dateFormat.format(new Date(holder.mDate.getTimeInMillis())));
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
+        holder.mView.setOnClickListener(v -> {
+            if (null != mListener) {
+                // Notify the active callbacks interface (the activity, if the
+                // fragment is attached to one) that an item has been selected.
+                mListener.onListFragmentInteraction(holder.mDate);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return TransactionDayUtils.getToday().get(Calendar.DAY_OF_MONTH);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mDateView;
         public final LinearLayout mTransactionLayout;
-        public List<TransactionView> mTransactionViewList = null;
+        public final List<TransactionView> mTransactionViewList;
 
-        public Calendar mItem;
+        public Calendar mDate;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mDateView = (TextView) view.findViewById(R.id.transactionDayDate);
             mTransactionLayout = (LinearLayout) view.findViewById(R.id.transactionsList);
-
+            mTransactionViewList = new ArrayList<>();
         }
 
         public void populateTransactionViewList(){
-            if(mItem == null)
-                throw new ExceptionInInitializerError("Must initialize mItem.");
+            if(mDate == null)
+                throw new ExceptionInInitializerError("Must initialize mDate.");
 
-            mTransactionViewList = new ArrayList<TransactionView>();
             TransactionView transactionView;
 
             ListIterator<TransactionModel> transactionListIterator =
                     transactionDataAccessor.getTransactionListIterator();
+            if(transactionListIterator == null)
+                return;
+
             TransactionModel transactionModel;
             while(transactionListIterator.hasPrevious()){
                 transactionModel = transactionListIterator.previous();
-                if(TransactionDayUtils.isOnSameDay(transactionModel.date, mItem)) {
+                if(TransactionDayUtils.isOnSameDay(transactionModel.date, mDate)) {
 
                     transactionView = new TransactionView(mView.getContext(), transactionModel);
                     mTransactionViewList.add(transactionView);
                 }
-                else if(transactionModel.date.before(mItem)){
+                else if(transactionModel.date.before(mDate)){
+                    transactionListIterator.next();
                     break;
                 }
             }

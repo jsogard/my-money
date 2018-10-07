@@ -69,8 +69,7 @@ public class TransactionDayFragment extends Fragment{
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyTransactionDayRecyclerViewAdapter(
-                    TransactionDayUtils.getDayRange(), mListener));
+            recyclerView.setAdapter(new MyTransactionDayRecyclerViewAdapter(mListener));
         }
         return view;
     }

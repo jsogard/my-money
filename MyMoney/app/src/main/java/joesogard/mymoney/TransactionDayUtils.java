@@ -7,7 +7,9 @@ import java.util.List;
 
 public class TransactionDayUtils {
 
-    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, MMM d");
+    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, MMM d"),
+        READ_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
 
     public static Calendar setStartOfDay(Calendar day){
         day.set(Calendar.HOUR_OF_DAY, 0);
@@ -25,12 +27,18 @@ public class TransactionDayUtils {
 
     public static Calendar getToday(){
         Calendar calendar = Calendar.getInstance();
+        if(Consts.Debug.SPOOF_CURRENT_DAY){
+            calendar.setTimeInMillis(Consts.Debug.SPOOFED_CURRENT_DAY);
+        }
         setEndOfDay(calendar);
         return calendar;
     }
 
     public static Calendar getFirstOfMonth(){
         Calendar calendar = Calendar.getInstance();
+        if(Consts.Debug.SPOOF_CURRENT_DAY){
+            calendar.set(Calendar.MONTH, getToday().get(Calendar.MONTH));
+        }
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         setStartOfDay(calendar);
         return calendar;

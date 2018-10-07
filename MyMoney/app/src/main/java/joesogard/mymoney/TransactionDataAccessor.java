@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -43,7 +44,7 @@ public class TransactionDataAccessor {
                     (jsonObject) -> {
                         try {
                             fetchedList.add(new TransactionModel((org.json.simple.JSONObject)jsonObject));
-                        } catch (JSONException e) {
+                        } catch (java.text.ParseException e) {
                             e.printStackTrace();
                         }
                     });
@@ -56,8 +57,8 @@ public class TransactionDataAccessor {
     private JSONArray readJSONFile(Context context, String fileName){
         try{
             InputStream inputStream = context.getAssets().open(fileName);
-            JSONObject object = (JSONObject) new JSONParser().parse(new InputStreamReader(inputStream, "UTF-8"));
-            return (JSONArray) object.get("data");
+            JSONArray object = (JSONArray)new JSONParser().parse(new InputStreamReader(inputStream, "UTF-8"));
+            return (JSONArray) object;
         } catch(FileNotFoundException e){
             e.printStackTrace();
         } catch(IOException e){
@@ -73,8 +74,10 @@ public class TransactionDataAccessor {
         for (TransactionModel transaction :
                 list) {
             TRANSACTION_MAP.put(transaction.id, transaction);
-            insertTransactionByDate(transaction);
+//            insertTransactionByDate(transaction);
         }
+        TRANSACTION_LIST.addAll(list);
+        TRANSACTION_LIST.sort((o1, o2) -> o1.date.compareTo(o2.date));
     }
 
     public TransactionModel getTransaction(long id){
@@ -82,7 +85,9 @@ public class TransactionDataAccessor {
     }
 
     public ListIterator<TransactionModel> getTransactionListIterator(){
-        return TRANSACTION_LIST.listIterator(TRANSACTION_LIST.size()-1);
+        if(TRANSACTION_LIST.size() == 0)
+            return null;
+        return TRANSACTION_LIST.listIterator(TRANSACTION_LIST.size());
     }
 
     private void insertTransactionByDate(TransactionModel transaction){

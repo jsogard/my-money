@@ -3,6 +3,7 @@ package joesogard.mymoney;
 import android.transition.TransitionManager;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class TransactionDataAccessorTest {
     @Before
     public void doRealMethodsByDefault() throws JSONException {
         dataAccessor = mock(TransactionDataAccessor.class);
-        when(dataAccessor.fetchTransactions()).thenCallRealMethod();
+        when(dataAccessor.fetchTransactions(null)).thenCallRealMethod();
         when(dataAccessor.getTransaction(anyLong())).thenCallRealMethod();
         doCallRealMethod().when(dataAccessor).syncTransactions();
     }
@@ -47,7 +48,7 @@ public class TransactionDataAccessorTest {
 
         int initialMapCount = dataAccessor.TRANSACTION_MAP.size(), addCount = 5;
         List<TransactionModel> fetchedList = generateTransactionList(addCount);
-        when(dataAccessor.fetchTransactions()).thenReturn(fetchedList);
+        when(dataAccessor.fetchTransactions(null)).thenReturn(fetchedList);
 
         dataAccessor.syncTransactions();
 
@@ -68,7 +69,7 @@ public class TransactionDataAccessorTest {
 
         int initialListCount = dataAccessor.TRANSACTION_LIST.size(), addCount = 5;
         List<TransactionModel> fetchedList = generateTransactionList(addCount);
-        when(dataAccessor.fetchTransactions()).thenReturn(fetchedList);
+        when(dataAccessor.fetchTransactions(null)).thenReturn(fetchedList);
 
         dataAccessor.syncTransactions();
 
@@ -85,7 +86,7 @@ public class TransactionDataAccessorTest {
     @Test
     public void fetchTransactions_SampleDataIsValid(){
 
-        List<TransactionModel> list = dataAccessor.fetchTransactions();
+        List<TransactionModel> list = dataAccessor.fetchTransactions(null);
         Assert.assertTrue(list.size() > 0);
     }
 

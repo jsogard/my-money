@@ -18,10 +18,15 @@ public class TransactionHistoryActivity extends FragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_transaction_history);
 
         transactionDataAccessor = new TransactionDataAccessor(this);
         transactionDataAccessor.syncTransactions();
+
+        setContentView(R.layout.activity_transaction_history);
+
+
+
+
     }
 
     @Override

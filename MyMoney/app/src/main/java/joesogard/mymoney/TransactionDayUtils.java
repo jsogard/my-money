@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import joesogard.mymoney.model.TransactionModel;
+
 public class TransactionDayUtils {
 
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, MMM d"),

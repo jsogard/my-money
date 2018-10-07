@@ -25,12 +25,21 @@ public class MyTransactionDayRecyclerViewAdapter extends RecyclerView.Adapter<My
 
     private final OnListFragmentInteractionListener mListener;
     private final TransactionDataAccessor transactionDataAccessor;
-    private final ListIterator<TransactionModel> transactionIterator;
 
     public MyTransactionDayRecyclerViewAdapter(OnListFragmentInteractionListener listener) {
+        setHasStableIds(true);
         mListener = listener;
         transactionDataAccessor = new TransactionDataAccessor();
-        transactionIterator = transactionDataAccessor.getTransactionListIterator();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     @Override
@@ -43,7 +52,7 @@ public class MyTransactionDayRecyclerViewAdapter extends RecyclerView.Adapter<My
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Calendar date = (Calendar)TransactionDayUtils.getToday().clone();
-        date.add(Calendar.DAY_OF_MONTH, - position);
+        date.add(Calendar.DAY_OF_MONTH, -position);
         TransactionDayUtils.setStartOfDay(date);
         holder.mDate = date;
         holder.populateTransactionViewList();
@@ -86,26 +95,21 @@ public class MyTransactionDayRecyclerViewAdapter extends RecyclerView.Adapter<My
             if(mDate == null)
                 throw new ExceptionInInitializerError("Must initialize mDate.");
 
-            TransactionView transactionView;
-
-            ListIterator<TransactionModel> transactionListIterator =
-                    transactionDataAccessor.getTransactionListIterator();
-            if(transactionListIterator == null)
-                return;
-
-            TransactionModel transactionModel;
-            while(transactionListIterator.hasPrevious()){
-                transactionModel = transactionListIterator.previous();
-                if(TransactionDayUtils.isOnSameDay(transactionModel.date, mDate)) {
-
-                    transactionView = new TransactionView(mView.getContext(), transactionModel);
-                    mTransactionViewList.add(transactionView);
-                }
-                else if(transactionModel.date.before(mDate)){
-                    transactionListIterator.next();
-                    break;
-                }
+            List<TransactionModel> todayTransactions = transactionDataAccessor.getTransactionsByDay(mDate);
+            for (TransactionModel transactionModel:
+                 todayTransactions) {
+                if(!transactionViewListContainsModel(transactionModel))
+                    mTransactionViewList.add(new TransactionView(mView.getContext(), transactionModel));
             }
+        }
+
+        private boolean transactionViewListContainsModel(TransactionModel transactionModel){
+            for (TransactionView transactionView:
+                 mTransactionViewList) {
+                if(transactionView.transactionModel == transactionModel)
+                    return true;
+            }
+            return false;
         }
 
         public void populateTransactionLayout(){

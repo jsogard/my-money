@@ -2,8 +2,6 @@ package joesogard.mymoney;
 
 import android.transition.TransitionManager;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,9 +13,6 @@ import java.util.Random;
 
 import joesogard.mymoney.model.TransactionModel;
 
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -29,11 +24,11 @@ public class TransactionDataAccessorTest {
     private TransactionDataAccessor dataAccessor;
 
     @Before
-    public void doRealMethodsByDefault() throws JSONException {
+    public void doRealMethodsByDefault() {
         dataAccessor = mock(TransactionDataAccessor.class);
-        when(dataAccessor.fetchTransactions(null)).thenCallRealMethod();
-        when(dataAccessor.getTransaction(anyLong())).thenCallRealMethod();
-        doCallRealMethod().when(dataAccessor).syncTransactions();
+//        when(dataAccessor.fetchTransactions(null)).thenCallRealMethod();
+//        when(dataAccessor.getTransaction(anyLong())).thenCallRealMethod();
+//        doCallRealMethod().when(dataAccessor).syncTransactions();
     }
 
     /* UNIT TESTS */
@@ -44,15 +39,16 @@ public class TransactionDataAccessorTest {
      * Then they are added to the Map
      */
     @Test
-    public void syncTransactions_AddMultipleToMap() throws JSONException {
+    public void syncTransactions_AddMultipleToMap() {
 
-        int initialMapCount = dataAccessor.TRANSACTION_MAP.size(), addCount = 5;
+        int initialMapCount = getTransactionMapSize(), addCount = 5;
         List<TransactionModel> fetchedList = generateTransactionList(addCount);
         when(dataAccessor.fetchTransactions(null)).thenReturn(fetchedList);
+        doCallRealMethod().when(dataAccessor).syncTransactions();
 
         dataAccessor.syncTransactions();
 
-        Assert.assertEquals(initialMapCount + addCount, dataAccessor.TRANSACTION_MAP.size());
+        Assert.assertEquals(initialMapCount + addCount, getTransactionMapSize());
         for (TransactionModel transaction :
                 fetchedList) {
             Assert.assertNotEquals(null, dataAccessor.getTransaction(transaction.id));
@@ -65,17 +61,18 @@ public class TransactionDataAccessorTest {
      * Then they are added to the list by date
      */
     @Test
-    public void syncTransactions_AddMultipleToList() throws JSONException {
+    public void syncTransactions_AddMultipleToList() {
 
-        int initialListCount = dataAccessor.TRANSACTION_LIST.size(), addCount = 5;
+        int initialListCount = dataAccessor.__TRANSACTION_LIST.size(), addCount = 5;
         List<TransactionModel> fetchedList = generateTransactionList(addCount);
         when(dataAccessor.fetchTransactions(null)).thenReturn(fetchedList);
+        doCallRealMethod().when(dataAccessor).syncTransactions();
 
         dataAccessor.syncTransactions();
 
-        Assert.assertEquals(initialListCount + addCount, dataAccessor.TRANSACTION_LIST.size());
-        Assert.assertTrue(dataAccessor.TRANSACTION_LIST.containsAll(fetchedList));
-        Assert.assertTrue(isSortedByDate(dataAccessor.TRANSACTION_LIST));
+        Assert.assertEquals(initialListCount + addCount, dataAccessor.__TRANSACTION_LIST.size());
+        Assert.assertTrue(dataAccessor.__TRANSACTION_LIST.containsAll(fetchedList));
+        Assert.assertTrue(isSortedByDate(dataAccessor.__TRANSACTION_LIST));
     }
 
     /**
@@ -89,6 +86,55 @@ public class TransactionDataAccessorTest {
         List<TransactionModel> list = dataAccessor.fetchTransactions(null);
         Assert.assertTrue(list.size() > 0);
     }
+
+    @Test
+    public void getTransactionsByDay_OneTransactionReturnList(){
+
+        TransactionModel latestTransactionModel = null;
+        Calendar latestDate = Calendar.getInstance();
+        for (int i = 0; i < 5; i++) {
+            latestDate.add(Calendar.DAY_OF_MONTH, 1);
+            latestTransactionModel = new TransactionModel(
+                    i, "Trans_" + i,
+                    new Float(i), (Calendar) latestDate.clone()
+            );
+            dataAccessor.__TRANSACTION_LIST.add(latestTransactionModel);
+        }
+        when(dataAccessor.getTransactionsByDay(latestDate)).thenCallRealMethod();
+
+        List<TransactionModel> list = dataAccessor.getTransactionsByDay(latestDate);
+
+        Assert.assertEquals(1, list.size());
+        Assert.assertEquals(latestTransactionModel, list.get(0));
+    }
+
+    @Test
+    public void getTransactionsByDay_NoTransactionsReturnEmpty(){
+
+        Calendar baseDate = Calendar.getInstance(), date, missingDate = null;
+        for (int i = 0; i < 5; i++) {
+            date = (Calendar) baseDate.clone();
+            date.add(Calendar.DAY_OF_MONTH, i);
+
+            if(i == 3) {
+                missingDate = date;
+                continue;
+            }
+
+            dataAccessor.__TRANSACTION_LIST.add(new TransactionModel(
+                    i, "Trans_" + i,
+                    new Float(i), (Calendar) baseDate.clone()
+            ));
+        }
+        when(dataAccessor.getTransactionsByDay(baseDate)).thenCallRealMethod();
+
+        List<TransactionModel> list = dataAccessor.getTransactionsByDay(missingDate);
+
+        Assert.assertEquals(0, list.size());
+    }
+
+
+
 
     /* HELPER METHODS */
 
@@ -117,5 +163,14 @@ public class TransactionDataAccessorTest {
             prev = transaction;
         }
         return true;
+    }
+
+    private int getTransactionMapSize(){
+        int count = 0;
+        for (List<TransactionModel> list:
+                dataAccessor.TRANSACTION_MAP.values()) {
+            count += list.size();
+        }
+        return count;
     }
 }

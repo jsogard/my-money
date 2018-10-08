@@ -19,60 +19,47 @@ import static org.mockito.Mockito.when;
 
 public class TransactionDataAccessorTest {
 
-    private static final Random RANDOM = new Random();
-
-    private TransactionDataAccessor dataAccessor;
-
-    @Before
-    public void doRealMethodsByDefault() {
-        dataAccessor = mock(TransactionDataAccessor.class);
-//        when(dataAccessor.fetchTransactions(null)).thenCallRealMethod();
-//        when(dataAccessor.getTransaction(anyLong())).thenCallRealMethod();
-//        doCallRealMethod().when(dataAccessor).syncTransactions();
-    }
-
     /* UNIT TESTS */
 
     /**
-     * When I fetch new transactions
+     * When I sync transactions
      *  And there are new transactions
      * Then they are added to the Map
      */
     @Test
-    public void syncTransactions_AddMultipleToMap() {
+    public void syncTransactions_AddMultipleToMapSuccessful() {
 
-        int initialMapCount = getTransactionMapSize(), addCount = 5;
+        TransactionDataAccessor dataAccessor = mock(TransactionDataAccessor.class);
+        int initialMapCount = dataAccessor.TRANSACTION_MAP.size(), addCount = 5;
         List<TransactionModel> fetchedList = generateTransactionList(addCount);
         when(dataAccessor.fetchTransactions(null)).thenReturn(fetchedList);
         doCallRealMethod().when(dataAccessor).syncTransactions();
 
         dataAccessor.syncTransactions();
 
-        Assert.assertEquals(initialMapCount + addCount, getTransactionMapSize());
+        Assert.assertEquals(initialMapCount + addCount, dataAccessor.TRANSACTION_MAP.size());
         for (TransactionModel transaction :
                 fetchedList) {
-            Assert.assertNotEquals(null, dataAccessor.getTransaction(transaction.id));
+            Assert.assertTrue(dataAccessor.TRANSACTION_MAP.containsTransaction(transaction));
         }
     }
 
     /**
-     * When I fetch new transactions
-     *  And there are new transactions
-     * Then they are added to the list by date
+     * When I sync transactions
+     *  And there are no new transactions
+     * Then the map is unchanged
      */
     @Test
-    public void syncTransactions_AddMultipleToList() {
+    public void syncTransactions_AddNoneToMapSuccessful(){
 
-        int initialListCount = dataAccessor.__TRANSACTION_LIST.size(), addCount = 5;
-        List<TransactionModel> fetchedList = generateTransactionList(addCount);
-        when(dataAccessor.fetchTransactions(null)).thenReturn(fetchedList);
+        TransactionDataAccessor dataAccessor = mock(TransactionDataAccessor.class);
+        int initialMapCount = dataAccessor.TRANSACTION_MAP.size();
+        when(dataAccessor.fetchTransactions(null)).thenReturn(new ArrayList<>());
         doCallRealMethod().when(dataAccessor).syncTransactions();
 
         dataAccessor.syncTransactions();
 
-        Assert.assertEquals(initialListCount + addCount, dataAccessor.__TRANSACTION_LIST.size());
-        Assert.assertTrue(dataAccessor.__TRANSACTION_LIST.containsAll(fetchedList));
-        Assert.assertTrue(isSortedByDate(dataAccessor.__TRANSACTION_LIST));
+        Assert.assertEquals(initialMapCount, dataAccessor.TRANSACTION_MAP.size());
     }
 
     /**
@@ -83,58 +70,10 @@ public class TransactionDataAccessorTest {
     @Test
     public void fetchTransactions_SampleDataIsValid(){
 
+        TransactionDataAccessor dataAccessor = mock(TransactionDataAccessor.class);
         List<TransactionModel> list = dataAccessor.fetchTransactions(null);
         Assert.assertTrue(list.size() > 0);
     }
-
-    @Test
-    public void getTransactionsByDay_OneTransactionReturnList(){
-
-        TransactionModel latestTransactionModel = null;
-        Calendar latestDate = Calendar.getInstance();
-        for (int i = 0; i < 5; i++) {
-            latestDate.add(Calendar.DAY_OF_MONTH, 1);
-            latestTransactionModel = new TransactionModel(
-                    i, "Trans_" + i,
-                    new Float(i), (Calendar) latestDate.clone()
-            );
-            dataAccessor.__TRANSACTION_LIST.add(latestTransactionModel);
-        }
-        when(dataAccessor.getTransactionsByDay(latestDate)).thenCallRealMethod();
-
-        List<TransactionModel> list = dataAccessor.getTransactionsByDay(latestDate);
-
-        Assert.assertEquals(1, list.size());
-        Assert.assertEquals(latestTransactionModel, list.get(0));
-    }
-
-    @Test
-    public void getTransactionsByDay_NoTransactionsReturnEmpty(){
-
-        Calendar baseDate = Calendar.getInstance(), date, missingDate = null;
-        for (int i = 0; i < 5; i++) {
-            date = (Calendar) baseDate.clone();
-            date.add(Calendar.DAY_OF_MONTH, i);
-
-            if(i == 3) {
-                missingDate = date;
-                continue;
-            }
-
-            dataAccessor.__TRANSACTION_LIST.add(new TransactionModel(
-                    i, "Trans_" + i,
-                    new Float(i), (Calendar) baseDate.clone()
-            ));
-        }
-        when(dataAccessor.getTransactionsByDay(baseDate)).thenCallRealMethod();
-
-        List<TransactionModel> list = dataAccessor.getTransactionsByDay(missingDate);
-
-        Assert.assertEquals(0, list.size());
-    }
-
-
-
 
     /* HELPER METHODS */
 
@@ -147,30 +86,11 @@ public class TransactionDataAccessorTest {
     }
 
     private TransactionModel generateTransaction(){
-        int id = Math.abs(RANDOM.nextInt());
+        Random random = new Random();
+        int id = Math.abs(random.nextInt());
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR_OF_DAY, RANDOM.nextInt(48)-24);
+        calendar.add(Calendar.HOUR_OF_DAY, random.nextInt(48)-24);
         return new TransactionModel(
-                id, "Transaction_" + id, RANDOM.nextFloat(), calendar);
-    }
-
-    private boolean isSortedByDate(List<TransactionModel> list){
-        TransactionModel prev = null;
-        for (TransactionModel transaction :
-                list) {
-            if(prev != null && prev.date.after(transaction.date))
-                return false;
-            prev = transaction;
-        }
-        return true;
-    }
-
-    private int getTransactionMapSize(){
-        int count = 0;
-        for (List<TransactionModel> list:
-                dataAccessor.TRANSACTION_MAP.values()) {
-            count += list.size();
-        }
-        return count;
+                id, "Transaction_" + id, random.nextFloat(), calendar);
     }
 }

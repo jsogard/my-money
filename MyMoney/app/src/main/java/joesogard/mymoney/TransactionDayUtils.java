@@ -61,8 +61,4 @@ public class TransactionDayUtils {
                 day1.get(Calendar.MONTH) == day2.get(Calendar.MONTH) &&
                 day1.get(Calendar.DAY_OF_MONTH) == day2.get(Calendar.DAY_OF_MONTH);
     }
-
-    public static List<Calendar> getDayRange(){
-        return getDayRange(getFirstOfMonth(), getToday());
-    }
 }

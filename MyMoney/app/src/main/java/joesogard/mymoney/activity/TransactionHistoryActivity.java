@@ -23,15 +23,10 @@ public class TransactionHistoryActivity extends FragmentActivity
         transactionDataAccessor.syncTransactions();
 
         setContentView(R.layout.activity_transaction_history);
-
-
-
-
     }
 
     @Override
     public void onListFragmentInteraction(Calendar calendar) {
-
 
     }
 }

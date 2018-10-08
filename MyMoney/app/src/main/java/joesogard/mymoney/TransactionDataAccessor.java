@@ -14,15 +14,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
+import joesogard.mymoney.model.TransactionMap;
 import joesogard.mymoney.model.TransactionModel;
 
 public class TransactionDataAccessor {
-    protected static HashMap<Long, TransactionModel> __TRANSACTION_MAP = new HashMap<>();
-    protected static List<TransactionModel> __TRANSACTION_LIST = new ArrayList<>();
-    protected static Map<Integer, List<TransactionModel>> TRANSACTION_MAP = new HashMap<>();
+    protected static TransactionMap TRANSACTION_MAP = new TransactionMap();
 
     private Context context;
 
@@ -55,8 +53,7 @@ public class TransactionDataAccessor {
     protected JSONArray readJSONFile(Context context, String fileName){
         try{
             InputStream inputStream = context.getAssets().open(fileName);
-            JSONArray object = (JSONArray)new JSONParser().parse(new InputStreamReader(inputStream, "UTF-8"));
-            return (JSONArray) object;
+            return (JSONArray)new JSONParser().parse(new InputStreamReader(inputStream, "UTF-8"));
         } catch(FileNotFoundException e){
             e.printStackTrace();
         } catch(IOException e){
@@ -87,60 +84,11 @@ public class TransactionDataAccessor {
                 TRANSACTION_MAP.replace(dateKey, newValue);
             else
                 TRANSACTION_MAP.put(dateKey, newValue);
-//            __TRANSACTION_MAP.put(transaction.id, transaction);
-//            insertTransactionByDate(transaction);
         }
-//        __TRANSACTION_LIST.addAll(list);
-//        __TRANSACTION_LIST.sort((o1, o2) -> o1.date.compareTo(o2.date));
     }
 
-    public TransactionModel getTransaction(long id){
-        return __TRANSACTION_MAP.get(id);
-    }
-
-    public ListIterator<TransactionModel> getTransactionListIterator(){
-        if(__TRANSACTION_LIST.size() == 0)
-            return null;
-        return __TRANSACTION_LIST.listIterator(__TRANSACTION_LIST.size());
-    }
-
-    private void insertTransactionByDate(TransactionModel transaction){
-        Calendar before = null, after = null;
-        for(int index = __TRANSACTION_LIST.size()-1; index >= 0; index--){
-            after = before;
-            before = __TRANSACTION_LIST.get(index).date;
-            if(transaction.date.after(before) && (after == null || transaction.date.before(after)) ){
-                __TRANSACTION_LIST.add(index + 1, transaction);
-                return;
-            }
-        }
-        __TRANSACTION_LIST.add(0, transaction);
-    }
-
-    /**
-     *
-     * Tests:
-     * getTransactionsByDay_OneTransactionReturnList
-     * getTransactionsByDay_NoTransactionsReturnEmpty
-     * @param mDate
-     * @return
-     */
     public List<TransactionModel> getTransactionsByDay(Calendar mDate) {
-//        ListIterator<TransactionModel> transactionIterator = __TRANSACTION_LIST.listIterator();
-//        TransactionModel transactionModel;
-//        int compare, day = mDate.get(Calendar.DAY_OF_MONTH);
-//        List<TransactionModel> dayTransactions = new ArrayList<>();
-//
-//        while(transactionIterator.hasNext()){
-//            transactionModel = transactionIterator.next();
-//            compare = transactionModel.date.get(Calendar.DAY_OF_MONTH);
-//            if(compare > day){
-//                break;
-//            }
-//            if(compare == day){
-//                dayTransactions.add(transactionModel);
-//            }
-//        }
-        return TRANSACTION_MAP.getOrDefault(mDate.get(Calendar.DAY_OF_MONTH), new ArrayList<>());
+        return TRANSACTION_MAP.getOrDefault(
+                mDate.get(Calendar.DAY_OF_MONTH), new ArrayList<>());
     }
 }

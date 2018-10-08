@@ -20,7 +20,7 @@ public class TransactionHistoryActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
 
         transactionDataAccessor = new TransactionDataAccessor(this);
-        transactionDataAccessor.syncTransactions();
+        transactionDataAccessor.syncTransactions(this);
 
         setContentView(R.layout.activity_transaction_history);
     }

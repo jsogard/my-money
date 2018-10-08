@@ -33,9 +33,9 @@ public class TransactionDataAccessorTest {
         int initialMapCount = dataAccessor.TRANSACTION_MAP.size(), addCount = 5;
         List<TransactionModel> fetchedList = generateTransactionList(addCount);
         when(dataAccessor.fetchTransactions(null)).thenReturn(fetchedList);
-        doCallRealMethod().when(dataAccessor).syncTransactions();
+        doCallRealMethod().when(dataAccessor).syncTransactions(null);
 
-        dataAccessor.syncTransactions();
+        dataAccessor.syncTransactions(null);
 
         Assert.assertEquals(initialMapCount + addCount, dataAccessor.TRANSACTION_MAP.size());
         for (TransactionModel transaction :
@@ -55,24 +55,11 @@ public class TransactionDataAccessorTest {
         TransactionDataAccessor dataAccessor = mock(TransactionDataAccessor.class);
         int initialMapCount = dataAccessor.TRANSACTION_MAP.size();
         when(dataAccessor.fetchTransactions(null)).thenReturn(new ArrayList<>());
-        doCallRealMethod().when(dataAccessor).syncTransactions();
+        doCallRealMethod().when(dataAccessor).syncTransactions(null);
 
-        dataAccessor.syncTransactions();
+        dataAccessor.syncTransactions(null);
 
         Assert.assertEquals(initialMapCount, dataAccessor.TRANSACTION_MAP.size());
-    }
-
-    /**
-     * As a developer
-     * When I test the app with sample data
-     * Then the sample data is parsed correctly
-     */
-    @Test
-    public void fetchTransactions_SampleDataIsValid(){
-
-        TransactionDataAccessor dataAccessor = mock(TransactionDataAccessor.class);
-        List<TransactionModel> list = dataAccessor.fetchTransactions(null);
-        Assert.assertTrue(list.size() > 0);
     }
 
     /* HELPER METHODS */

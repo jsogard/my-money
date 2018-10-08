@@ -32,44 +32,18 @@ public class TransactionDataAccessor {
     }
 
     protected List<TransactionModel> fetchTransactions(Context context) {
-        List<TransactionModel> fetchedList = new ArrayList<>();
+
         if(Consts.Debug.FAKE_TRANSACTION_DATA){
-
-            JSONArray jsonArray = readJSONFile(context, Consts.Debug.TRANSACTION_FILE_NAME);
-            jsonArray.forEach(
-                    (jsonObject) -> {
-                        try {
-                            fetchedList.add(new TransactionModel((org.json.simple.JSONObject)jsonObject));
-                        } catch (java.text.ParseException e) {
-                            e.printStackTrace();
-                        }
-                    });
-            return fetchedList;
+            return requestTransactionsLocal(context);
         }
 
-        return null;
-    }
-
-    protected JSONArray readJSONFile(Context context, String fileName){
-        try{
-            InputStream inputStream = context.getAssets().open(fileName);
-            return (JSONArray)new JSONParser().parse(new InputStreamReader(inputStream, "UTF-8"));
-        } catch(FileNotFoundException e){
-            e.printStackTrace();
-        } catch(IOException e){
-            e.printStackTrace();
-        } catch(ParseException e){
-            e.printStackTrace();
-        }
         return null;
     }
 
     /**
-     * Tests:
-     * syncTransactions_AddMultipleToMap
-     * syncTransactions_AddMultipleToList
+     *
      */
-    public void syncTransactions() {
+    public void syncTransactions(Context context) {
         List<TransactionModel> fetch = fetchTransactions(context), newValue;
         int dateKey;
         boolean exists;
@@ -90,5 +64,30 @@ public class TransactionDataAccessor {
     public List<TransactionModel> getTransactionsByDay(Calendar mDate) {
         return TRANSACTION_MAP.getOrDefault(
                 mDate.get(Calendar.DAY_OF_MONTH), new ArrayList<>());
+    }
+
+    private List<TransactionModel> requestTransactionsLocal(Context context){
+        try{
+            List<TransactionModel> fetchedList = new ArrayList<>();
+            InputStream inputStream = context.getAssets().open(Consts.Debug.TRANSACTION_FILE_NAME);
+            JSONArray transactionData = (JSONArray)new JSONParser().parse(new InputStreamReader(inputStream, "UTF-8"));
+
+            transactionData.forEach(
+                    (jsonObject) -> {
+                        try {
+                            fetchedList.add(new TransactionModel((org.json.simple.JSONObject)jsonObject));
+                        } catch (java.text.ParseException e) {
+                            e.printStackTrace();
+                        }
+                    });
+            return fetchedList;
+        } catch(FileNotFoundException e){
+            e.printStackTrace();
+        } catch(IOException e){
+            e.printStackTrace();
+        } catch(ParseException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }
